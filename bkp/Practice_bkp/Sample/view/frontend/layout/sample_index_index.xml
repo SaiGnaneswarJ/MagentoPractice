@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Sample\Block\Hello" name="sample_hello" template="Magento_Sample::hello.phtml">
+                <arguments>
+                    <argument name="label" xsi:type="string">PERSON DETAILS</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceBlock name="form.subscribe" remove="false"/>
+        <referenceBlock name="cms_footer_links_container" remove="false"/>
+    </body>
+</page>

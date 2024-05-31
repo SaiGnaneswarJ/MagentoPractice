@@ -1,0 +1,62 @@
+<?php
+$collection = $block->getCollection();
+if ($collection->count()) {
+    ?>
+    <div>
+        <table class="table">
+            <caption ></caption>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>MOBILE NO</th>
+                <th>AGE</th>
+                <th>GENDER</th>
+                <th>ADDRESS</th>
+                <th>CREATED AT</th>
+                <th>ACTION</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($collection as $item): ?>
+                <tr>
+                    <td>
+                        <?php echo $item->getId() ?>
+                    </td>
+                    <td >
+                        <?php echo $item->getName() ?>
+                    </td>
+                    <td>
+                        <?php echo $item->getEmail() ?>
+                    </td>
+                    <td>
+                        <?php echo $item->getTelephone() ?>
+                    </td>
+                    <td>
+                        <?php echo $item->getAge() ?>
+                    </td>
+                    <td>
+                        <?php echo $item->getGender() ?>
+                    </td>
+                    <td>
+                        <?php echo $item->getAddress() ?>
+                    </td>
+                    <td>
+                        <?php echo date('Y-m-d', strtotime($item->getCreatedAt())); ?>
+                    </td>
+                    <td>
+                        <a href="<?php echo $block->getDeleteAction() . 'id/' . $item->getId(); ?>"><?php echo __('Delete') ?></a>
+                          || <a style="margin-left: 9px"
+                           href="<?php echo $block->getEditAction() . 'id/' . $item->getId(); ?>"><?php echo __('Edit') ?></a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
+?>
+

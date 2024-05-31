@@ -1,0 +1,306 @@
+ADD TO CART FOR PRODUCTS 
+
+<?php
+$startDate = date('2024-03-01');
+$endDate = date('2024-03-27');
+$collection = $block->getProductCollection($startDate, $endDate);
+?>
+<h2><center>BEST SELLER PRODUCTS</center></h2>
+<div class="products-grid">
+    <div class="product-items">
+        <?php foreach ($collection as $product): ?>
+            <div class="product-item">
+                <form action="<?= $block->escapeUrl($block->getUrl('checkout/cart/add')) ?>" method="post">
+                    <input type="hidden" name="product" value="<?= $product->getId() ?>">
+                    <input type="hidden" name="form_key" value="<?= $block->getFormKey() ?>">
+                    <a href="<?= $block->escapeUrl($product->getProductUrl()) ?>">
+                        <?php $imageUrl = $block->escapeUrl($block->getImageUrl($product, 'product_base_image')); ?>
+                        <img src="<?= $imageUrl ?>" alt="<?= $block->escapeHtml($product->getName()) ?>" >
+                    </a>
+                    <div class="product-info">
+                        <h4 class="product-name"><?php echo $block->escapeHtml($product->getName()); ?></h4>
+                        <div class="product-price"><h4>$<?php echo $product->getPrice(); ?></h4></div>
+                        <button type="submit" class="action tocart primary">
+                            <span>Add to Cart</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        <?php endforeach;?>
+    </div>
+</div>
+
+
+
+Block 
+
+<?php
+
+namespace Magento\NewProduct\Block;
+
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Sales\Model\ResourceModel\Report\Bestsellers\CollectionFactory as BestSellersCollectionFactory;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Catalog\Helper\Image;
+
+// block class extends the template file
+
+/**
+ * Class BestSeller
+ * @package Magento\NewProduct\Block
+ */
+class BestSeller extends Template
+{
+    protected $_bestSellersCollectionFactory;
+    protected $_productCollectionFactory;
+    protected $_storeManager;
+    protected $_imageHelper;
+
+
+    /**
+     * BestSeller constructor.
+     * @param Context $context
+     * @param CollectionFactory $productCollectionFactory
+     * @param StoreManagerInterface $storeManager
+     * @param BestSellersCollectionFactory $bestSellersCollectionFactory
+     * @param Image $imageHelper
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        CollectionFactory $productCollectionFactory,
+        StoreManagerInterface $storeManager,
+        BestSellersCollectionFactory $bestSellersCollectionFactory,
+        Image $imageHelper,
+        array $data = []
+    ) {
+        $this->_bestSellersCollectionFactory = $bestSellersCollectionFactory;
+        $this->_storeManager = $storeManager;
+        $this->_productCollectionFactory = $productCollectionFactory;
+        $this->_imageHelper = $imageHelper;
+        parent::__construct($context, $data);
+    }
+
+
+    /**
+     * @param null $startDate
+     * @param null $endDate
+     * @return \Magento\Catalog\Model\ResourceModel\Product\Collection
+     */
+    public function getProductCollection($startDate = null, $endDate = null)
+    {
+        $productIds = [];
+        $bestSellers = $this->_bestSellersCollectionFactory->create()
+            ->setDateRange($startDate, $endDate);
+
+        foreach ($bestSellers as $product) {
+            $productIds[] = $product->getProductId();
+        }
+
+        $collection = $this->_productCollectionFactory->create()->addIdFilter($productIds);
+        $collection->addAttributeToSelect(["name", "price", "image"]);
+        $collection->setPageSize(count($productIds));
+        return $collection;
+    }
+
+
+    /**
+     * @param $product
+     * @param string $imageType
+     * @return string
+     */
+    public function getImageUrl($product, $imageType = '')
+    {
+        return $this->_imageHelper->init($product, $imageType)->getUrl();
+    }
+
+}
+
+
+Template file 
+
+
+<?php
+$startDate = date('2024-03-01');
+$endDate = date('2024-03-27');
+$collection = $block->getProductCollection($startDate, $endDate);
+?>
+<h2><center>BEST SELLER PRODUCTS</center></h2>
+<div class="products-grid">
+    <div class="product-items">
+        <?php foreach ($collection as $product): ?>
+            <div class="product-item">
+                <a href="<?= $block->escapeUrl($product->getProductUrl()) ?>">
+                    <?php $imageUrl = $block->escapeUrl($block->getImageUrl($product, 'product_base_image')); ?>
+                    <img src="<?= $imageUrl ?>" alt="<?= $block->escapeHtml($product->getName()) ?>" >
+                </a>
+                <div class="product-info">
+                    <h4 class="product-name"><?php echo $block->escapeHtml($product->getName()); ?></h4>
+                    <div class="product-price"><h4>$<?php echo $product->getPrice(); ?></h4></div>
+                </div>
+                <button type="button" title="<?= __('Add to Cart') ?>" class="action tocart primary">
+                    <span><?= __('Add to Cart') ?></span>
+                </button>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+chekout form reference.
+
+https://stackoverflow.com/questions/9327115/adding-a-quick-order-form-in-magento
+
+
+
+
+
+
+<h1><center>Quick Order</center></h1>
+<div id="quick-order">
+    <input type="text" id="searchInput" placeholder="Search for products...">
+    <div id="productList"></div>
+</div>
+
+<style>
+    .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+    
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+    }
+
+    .quantity-selector input[type="number"] {
+        width: 50px;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    .quantity-selector button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 2px 5px;
+    }
+
+    img.product-image {
+        width: 70px;
+        height: auto;
+    }
+</style>
+
+<script>
+    require(['jquery'], function($) {
+        $(document).ready(function() {
+            $('#searchInput').on('input', function() {
+                var query = $(this).val();
+                $.ajax({
+                    url: '<?php echo $block->getUrl("quickorder/index/search"); ?>',
+                    data: {query: query},
+                    type: 'POST',
+                    success: function(response) {
+                        displayProducts(response.products);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            
+            $(document).on('click', '.quantity-increment', function() {
+                var input = $(this).siblings('input[type="number"]');
+                var currentValue = parseInt(input.val());
+                input.val(currentValue + 1);
+            });
+
+            
+            $(document).on('click', '.quantity-decrement', function() {
+                var input = $(this).siblings('input[type="number"]');
+                var currentValue = parseInt(input.val());
+                if (currentValue > 1) {
+                    input.val(currentValue - 1);
+                }
+            });
+        });
+
+        function displayProducts(products) {
+            $('#productList').empty();
+            var productTable = '<table>';
+            $.each(products, function(index, product) {
+                productTable += '<tr>';
+                productTable += '<td><img class="product-image" src="' + product.image_url + '" alt="' + product.name + '"></td>';
+                productTable += '<td>' + product.name + '</td>';
+                productTable += '<td class="quantity-selector">';
+                productTable += '<button class="quantity-decrement">-</button>';
+                productTable += '<input type="number" min="1" value="1">';
+                productTable += '<button class="quantity-increment">+</button>';
+                productTable += '</td>';
+                productTable += '<td>' + product.sku + '</td>';
+                productTable += '<td>$' + product.price + '</td>';
+                productTable += '<td><button class="add-to-cart-btn" data-product-id="' + product.entity_id + '">Add</button></td>';
+                productTable += '</tr>';
+            });
+            productTable += '</table>';
+            $('#productList').append(productTable);
+        }
+    });
+</script>
+
+
+
+add to cart  
+
+<?php
+$_product = $block->getProduct();
+?>
+<button type="button" class="btn btn-primary" onclick="addToCart()">Add to Cart</button>
+
+
+function addToCart() {
+    var product = <?php echo json_encode($_product); ?>;
+    var url = '<?php echo $this->getUrl('checkout/cart/add', ['product' => $_product->getId()]); ?>';
+    var data = {
+        product: product
+    };
+
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                // Add the product to the cart
+            } else {
+                // Show an error message
+            }
+        }
+    });
+}
+
+
+

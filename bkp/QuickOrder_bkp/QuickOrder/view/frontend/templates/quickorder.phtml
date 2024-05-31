@@ -1,0 +1,124 @@
+<h1><center>Quick Order</center></h1>
+<div id="quick-order">
+    <input type="text" id="searchInput" placeholder="Search for products...">
+    <div id="productList"></div>
+</div>
+
+<style>
+    .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+    
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+    }
+
+    .quantity-selector input[type="number"] {
+        width: 50px;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    .quantity-selector button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 2px 5px;
+    }
+
+    img.product-image {
+        width: 70px;
+        height: auto;
+    }
+</style>
+
+<script>
+    require(['jquery'], function($) {
+        $(document).ready(function() {
+            $(document).on('click', '.add-to-cart-btn', function() {
+                var productId = $(this).data('entity_id');
+                var quantity = $(this).closest('tr').find('input[type="number"]').val();
+                addToCart(productId, quantity);
+                console.log(productId);
+            });
+
+            $('#searchInput').on('input', function() {
+                var query = $(this).val();
+                $.ajax({
+                    url: '<?php echo $block->getUrl("quickorder/index/search"); ?>',
+                    data: {query: query},
+                    type: 'POST',
+                    success: function(response) {
+                        displayProducts(response.products);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            $(document).on('click', '.quantity-increment', function() {
+                var input = $(this).siblings('input[type="number"]');
+                var currentValue = parseInt(input.val());
+                input.val(currentValue + 1);
+            });
+
+            $(document).on('click', '.quantity-decrement', function() {
+                var input = $(this).siblings('input[type="number"]');
+                var currentValue = parseInt(input.val());
+                if (currentValue > 1) {
+                    input.val(currentValue - 1);
+                }
+            });
+        });
+
+        function displayProducts(products) {
+            $('#productList').empty();
+            var productTable = '<table>';
+            $.each(products, function(index, product) {
+                productTable += '<tr>';
+                // productTable += '<td>' + product.entity_id + '</td>';
+                productTable += '<td><img class="product-image" src="' + product.image_url + '" alt="' + product.name + '"></td>';
+                productTable += '<td>' + product.name + '</td>';
+                productTable += '<td class="quantity-selector">';
+                productTable += '<button class="quantity-decrement">-</button>';
+                productTable += '<input type="number" min="1" value="1">';
+                productTable += '<button class="quantity-increment">+</button>';
+                productTable += '</td>';
+                productTable += '<td>' + product.sku + '</td>';
+                productTable += '<td>$' + product.price + '</td>';
+                productTable += '<td><button class="add-to-cart-btn" data-entity_id="' + product.entity_id + '">Add</button></td>'; // Corrected attribute name
+                productTable += '</tr>';
+            });
+            productTable += '</table>';
+            $('#productList').append(productTable);
+        }
+
+        function addToCart(productId, quantity) {
+            $.ajax({
+                url: '<?php echo $block->getUrl("quickorder/index/addtocart"); ?>',
+                data: {entity_id: productId, qty: quantity},
+                type: 'POST',
+                success: function(response) {
+                    console.log('Product added to cart successfully!');
+                    window.location.href = '<?php echo $block->getUrl("checkout/cart"); ?>';
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+    });
+</script>

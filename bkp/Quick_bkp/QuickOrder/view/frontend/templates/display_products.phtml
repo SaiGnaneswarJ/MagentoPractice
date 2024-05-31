@@ -1,0 +1,29 @@
+<?php
+$productsInSession = $block->getProductsInSession();
+?>
+
+<h1>Product Details</h1>
+
+<?php if (!empty($productsInSession)): ?>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>SKU</th>
+            <th>Price</th>
+        </tr>
+        <?php foreach ($productsInSession as $product): ?>
+            <tr>
+                <td><?php echo $product['id']; ?></td>
+                <td><?php echo $product['name']; ?></td>
+                <td><?php echo $product['quantity']; ?></td>
+                <td><?php echo $product['sku']; ?></td>
+                <td><?php echo $product['price']; ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php else: ?>
+    <p>No products added yet.</p>
+<?php endif; ?>
+

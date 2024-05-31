@@ -1,0 +1,53 @@
+<!-- Shipping address template -->
+<li id="shipping" class="checkout-shipping-address" data-bind="fadeVisible: visible()">
+    <div class="step-title" data-bind="translate: 'Shipping Address', attr: { 'data-role': 'title' }"></div>
+    <div id="checkout-step-shipping" class="step-content" data-role="content">
+        <each data-bind="if: !quoteIsVirtual, args: getRegion('customer-email'), render: ''"></each>
+        <each data-bind="args: getRegion('address-list'), render: ''"></each>
+        <each data-bind="args: getRegion('address-list-additional-addresses'), render: ''"></each>
+
+        <!-- Address form pop up -->
+        <div data-bind="if: !isFormInline()">
+            <button type="button" class="action action-show-popup" data-bind="click: showFormPopUp, visible: !isNewAddressAdded()">
+                <span data-bind="translate: 'New Address'"></span>
+            </button>
+            <div id="opc-new-shipping-address" data-bind="visible: isFormPopUpVisible, render: shippingFormTemplate"></div>
+        </div>
+
+        <each data-bind="args: getRegion('before-form'), render: ''"></each>
+
+        <!-- Inline address form -->
+        <div data-bind="if: isFormInline()">
+            <render data-bind="args: shippingFormTemplate"></render>
+        </div>
+    </div>
+</li>
+
+<!-- Shipping method template -->
+<li id="opc-shipping_method" class="checkout-shipping-method" data-bind="fadeVisible: visible(), blockLoader: isLoading" role="presentation">
+    <div class="checkout-shipping-method">
+        <div class="step-title" data-bind="translate: 'Shipping Methods', attr: { 'data-role': 'title' }"></div>
+
+        <each data-bind="args: getRegion('before-shipping-method-form'), render: ''"></each>
+
+        <div id="checkout-step-shipping_method" class="step-content" data-role="content" role="tabpanel" aria-hidden="false">
+            <form id="co-shipping-method-form" class="form methods-shipping" data-bind="if: rates().length, submit: setShippingInformation, attr: { novalidate: 'novalidate' }">
+                <render data-bind="args: shippingMethodListTemplate"></render>
+                <div id="onepage-checkout-shipping-method-additional-load">
+                    <each data-bind="args: getRegion('shippingAdditional'), render: ''"></each>
+                </div>
+                <div class="message notice" role="alert" data-bind="if: errorValidationMessage().length">
+                    <span data-bind="text: errorValidationMessage"></span>
+                </div>
+                <div class="actions-toolbar" id="shipping-method-buttons-container">
+                    <div class="primary">
+                        <button data-role="opc-continue" type="submit" class="button action continue primary">
+                            <span data-bind="translate: 'Next'">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div class="no-quotes-block" data-bind="ifnot: rates().length > 0, translate: 'Sorry, no quotes are available for this order at this time'"></div>
+        </div>
+    </div>
+</li>

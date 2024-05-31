@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick Order</title>
+</head>
+<body>
+
+<h1><center>Quick Order</center></h1>
+<div id="quick-order">
+    <input type="text" id="searchInput" placeholder="Search for products...">
+    <div id="productList"></div>
+</div>
+
+<style>
+    .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: center;
+    }
+    
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+    }
+
+    .quantity-selector input[type="number"] {
+        width: 50px;
+        margin-right: 10px;
+        text-align: center;
+    }
+
+    .quantity-selector button {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 2px 5px;
+    }
+
+    img.product-image {
+        width: 70px;
+        height: auto;
+    }
+</style>
+
+<script>
+    require(['jquery'], function($) {
+        $(document).ready(function() {
+            $('#searchInput').on('input', function() {
+                var query = $(this).val();
+                $.ajax({
+                    url: '<?php echo $block->getUrl("quickorder/index/search"); ?>',
+                    data: {query: query},
+                    type: 'POST',
+                    success: function(response) {
+                        displayProducts(response.products);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            $(document).on('click', '.quantity-increment', function() {
+                var input = $(this).siblings('input[type="number"]');
+                var currentValue = parseInt(input.val());
+                input.val(currentValue + 1);
+            });
+
+            $(document).on('click', '.quantity-decrement', function() {
+                var input = $(this).siblings('input[type="number"]');
+                var currentValue = parseInt(input.val());
+                if (currentValue > 1) {
+                    input.val(currentValue - 1);
+                }
+            });
+
+            $(document).on('click', '.add-product-btn', function() {
+                var productRow = $(this).closest('tr');
+                var productId = $(this).data('entity_id');
+                var productName = productRow.find('.product-name').text();
+                var productQuantity = parseInt(productRow.find('input[type="number"]').val());
+                var productSku = productRow.find('.product-sku').text();
+                var productPrice = parseFloat(productRow.find('.product-price').text().replace('$', ''));
+
+                
+                $.ajax({
+                    url: '<?php echo $block->getUrl("quickorder/index/addproducttosession"); ?>',
+                    type: 'POST',
+                    data: {
+                        id: productId,
+                        name: productName,
+                        quantity: productQuantity,
+                        sku: productSku,
+                        price: productPrice
+                    },
+                    success: function(response) {
+                        console.log("Product Added");
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+        function displayProducts(products) {
+            $('#productList').empty();
+            var productTable = '<table>';
+            $.each(products, function(index, product) {
+                productTable += '<tr>';
+                productTable += '<td><img class="product-image" src="' + product.image_url + '" alt="' + product.name + '"></td>';
+                productTable += '<td class="product-name">' + product.name + '</td>';
+                productTable += '<td class="quantity-selector">';
+                productTable += '<button class="quantity-decrement">-</button>';
+                productTable += '<input type="number" min="1" value="1">';
+                productTable += '<button class="quantity-increment">+</button>';
+                productTable += '</td>';
+                productTable += '<td class="product-sku">' + product.sku + '</td>';
+                productTable += '<td class="product-price">$' + product.price + '</td>';
+                productTable += '<td><button class="add-product-btn" data-entity_id="' + product.entity_id + '">Add</button></td>';
+                productTable += '</tr>';
+            });
+            productTable += '</table>';
+            $('#productList').append(productTable);
+        }
+
+    });
+</script>
+
+</body>
+</html>

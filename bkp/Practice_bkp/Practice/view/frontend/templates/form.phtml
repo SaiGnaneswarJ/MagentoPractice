@@ -1,0 +1,101 @@
+<?php
+$data = $block->getAllData();
+$name = '';
+$email = '';
+$telephone = '';
+$age = "";
+$gender = "";
+$address = "";
+if ($data->getId()) {
+    $name = $data->getName();
+    $email = $data->getEmail();
+    $telephone = $data->getTelephone();
+    $age = $data->getAge();
+    $gender = $data->getGender();
+    $address = $data->getAddress();
+}
+?>
+
+<html>
+<head>
+    <title>PERSON FORM</title>
+</head>
+<body>
+<div class="row">
+    <div class="col-md-8">
+        <form name="addData" method="post" id="addData" class="form"
+              action="<?php echo $this->getFormAction(); ?>"
+              data-hasrequired="<?= $block->escapeHtmlAttr(__('* Required Fields')) ?>"
+              data-mage-init='{"validation":{}}'>
+            <fieldset class="fieldset">
+                <legend class="legend"><b>PERSON DETAILS</b></legend>
+                <fieldset class="fieldset row">
+                    <?php
+                    if ($data->getId()) {
+                        ?>
+                        <input type="hidden" name="id" value="<?php echo $data->getId(); ?>">
+                        <?php
+                    } ?>
+                    <div class="fields col-md-6">
+                        <div class="field name required">
+                            <label class="label" for="title">Name</label>
+                            <div class="control">
+                                <input style = "width:800px" name="name" id="name" title="Name" value="<?php echo $name ?>" class="input-text"
+                                       type="text"
+                                       data-validate="{required:true, 'validate-alphanum-with-spaces':true}">
+                            </div>
+                        </div>
+                        <div class="field name required">
+                            <label class="label" for="title">Email</label>
+                            <div class="control">
+                                <input style = "width:800px" name="email" id="email" title="Email" value="<?php echo $email; ?>"
+                                       class="input-text" type="text"
+                                       data-validate="{required:true, 'validate-email':true}">
+                            </div>
+                        </div>
+                        <div class="field name required">
+                            <label class="label" for="title">Mobile No</label>
+                            <div class="control">
+                                <input style = "width:800px" name="telephone" id="telephone" title="Telephone"
+                                       value="<?php echo $telephone; ?>" class="input-text"
+                                       type="text" data-validate="{required:true}">
+                            </div>
+                        </div>
+                        <div class="field name required">
+                            <label class="label" for="title" >Age</label>
+                            <div class="control">
+                                <input style = "width:800px" name="age" id="age" title="Age" value="<?php echo $age; ?>" class="input-text"
+                                       type="text" data-validate="{required:true}">
+                            </div>
+                        </div>
+                        <div class="field name required">
+                            <label class="label">Gender</label>
+                            <div class="control">
+                                <select name="gender" id="gender" class="select" data-validate="{required:true}" style = "width:800px">
+                                    <option value="">Select Gender</option>
+                                    <option value="MALE" <?php echo ($gender === "MALE") ? 'selected' : ''; ?>>Male</option>
+                                    <option value="FEMALE" <?php echo ($gender === "FEMALE") ? 'selected' : ''; ?>>Female</option>
+                                    <option value="OTHERS" <?php echo ($gender === "OTHERS") ? 'selected' : ''; ?>>Others</option>
+                                </select>
+                            </div>
+                        <div class="field name required">
+                            <label class="label" for="title" >Address</label>
+                            <div class="control">
+                                <input style = "width:800px" name="address" id="address" title="Age" value="<?php echo $address; ?>" class="input-text"
+                                       type="text" data-validate="{required:true}">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </fieldset>
+            <div class="actions-toolbar">
+                <div class="primary">
+                    <button type="submit" class="action submit primary" title="Save" style = "width:500px;margin-left: 150px">SAVE</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+<menu>
+    <add id="Magento_Practice::Details" title="Details" module="Magento_Practice" sortOrder="900"
+         resource="Magento_Practice::Details"/>
+    <add id="Magento_Practice::grid" title="PERSON DETAILS" module="Magento_Practice" sortOrder="10"
+         action="practice/index/index" resource="Magento_Practice::grid" parent="Magento_Practice::Details"/>
+</menu>
+</config>

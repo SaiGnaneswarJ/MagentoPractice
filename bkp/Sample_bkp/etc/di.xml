@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="sampleAddData" xsi:type="object">Magento\Sample\Console\Command\AddData</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <preference for="Magento\Sample\Api\Data\ItemInterface" type="Magento\Sample\Model\Data" />
+    <preference for="Magento\Sample\Api\ItemRepositoryInterface" type="Magento\Sample\Model\ItemRepository" />
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="sample_items_grid_data_source" xsi:type="string">Magento\Sample\Model\ResourceModel\Data\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

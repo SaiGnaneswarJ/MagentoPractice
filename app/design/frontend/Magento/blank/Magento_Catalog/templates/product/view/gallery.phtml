@@ -1,0 +1,6 @@
+<?php
+/** @var \Magento\Catalog\Block\Product\View\Gallery $block */
+$product = $block->getProduct();
+$imageUrl = $block->getImage($product, 'product_page_image_small')->getImageUrl();
+?>
+<img src="<?php echo $imageUrl; ?>" alt="<?php echo $product->getName(); ?>" />

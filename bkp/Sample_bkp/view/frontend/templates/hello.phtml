@@ -1,0 +1,14 @@
+<?php foreach ($block->getCollection() as $data): ?>
+
+    <p>
+        Id: <?php echo $data->getId(); ?>
+    </p>
+    <p>
+      Name:  <?php echo $data->getName(); ?>
+    </p>
+
+    <p>
+      Email:  <?php echo $data->getEmail(); ?>
+    </p>
+    <br>
+<?php endforeach; ?>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="practiceAddData" xsi:type="object">Magento\Practice\Console\Command\AddData</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="practice_listing_data_source" xsi:type="string">Magento\Practice\Model\ResourceModel\Practice\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Magento\Practice\Model\ResourceModel\Practice\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">form_data</argument>
+            <argument name="resourceModel" xsi:type="string">Magento\Practice\Model\ResourceModel\Practice</argument>
+        </arguments>
+    </virtualType>
+</config>

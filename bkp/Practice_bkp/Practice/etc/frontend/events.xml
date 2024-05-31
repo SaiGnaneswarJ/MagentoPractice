@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="custom_form_submit_event">
+        <observer name="custom_form_submit_observer" instance="Magento\Practice\Observer\CustomFormSubmitObserver" />
+    </event>
+</config>
